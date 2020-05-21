@@ -19,8 +19,8 @@ snake_c, bkgrnd_c, line_c = (100, 200, 80), (12, 12, 12), (72, 72, 72)
 class Snake:
     """Holds the values for the player Snake."""
     def __init__(self):
-        self.head_x = 0
-        self.head_y = 0
+        self.head_x = 9 * BLOCK_SIZE + 9
+        self.head_y = 9 * BLOCK_SIZE + 9
         self.direction = 0
 
     def update_dir(self, key):
