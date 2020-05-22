@@ -2,3 +2,5 @@
 Snake.code-workspace
 
 .vscode/
+__pycache__/AdamAndEve.cpython-38.pyc
+__pycache__/Values.cpython-38.pyc
