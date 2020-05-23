@@ -14,6 +14,8 @@ class Apple():
         while self.position in self.snake.position:
             self.position = [random.randint(0, v.BLOCK_WIDTH), random.randint(0, v.BLOCK_WIDTH)]
 
+        return self.position
+
     def detect_eaten(self):
         if self.position in self.snake.position:
             return True
@@ -25,8 +27,9 @@ class Snake:
     """Holds the values for the player Snake."""
 
     def __init__(self):
-        self.position = [[10, 10], [9, 10], [8, 10]]
+        self.position = [[10, 10], [9, 10], [8, 10], [7, 10], [6, 10]]
         self.direction = 0
+        self.score = 0
 
     def update_dir(self, key):
         """Updates the snake's direction."""
@@ -66,7 +69,13 @@ class Snake:
             return True
         if self.position[0][1] < 0 or self.position[0][1] > v.BLOCK_WIDTH - 1:
             return True
-        # TODO detect if the snake hits its own tail
+        
+        if len(self.position) > 4:
+            for i in range(4, len(self.position)):
+                if self.position[0][0] == self.position[i][0] and self.position[0][1] == self.position[i][1]:
+                    return True
+
+
         return False
 
     def grow(self):

@@ -5,13 +5,25 @@ from AdamAndEve import Snake, Apple
 
 # Set up
 pygame.init()
-screen = pygame.display.set_mode((v.SCREEN_SIZE, v.SCREEN_SIZE))
+screen = pygame.display.set_mode((v.PLAY_AREA, v.PLAY_AREA + v.SCORE_AREA))
 screen.fill((0, 0, 0))
 pygame.display.set_caption("Snake")
 pygame.display.flip()
 
+# Set up score rect
+scoreText = pygame.font.Font('freesansbold.ttf', 60)
+scoreSurf = scoreText.render("Score: 0", True, pygame.Color(255, 255, 255))
+scoreRect = scoreSurf.get_rect()
+scoreRect.center = ((v.PLAY_AREA - scoreRect.width) * 0.5, (v.PLAY_AREA + (v.SCORE_AREA - scoreRect.height) * 0.5))
+screen.blit(scoreSurf, scoreRect.center)
 
 # ---------  Help methods ---------- #
+
+def incr_score(snake):
+    snake.score += 1
+    global scoreSurf
+    scoreSurf = scoreText.render("Score: {}".format(snake.score), True, pygame.Color(255, 255, 255))
+
 
 def draw_block(pos, color):
     """Draw a block at corner with width BLOCK_SIZE in passed color. Note that the passed pos is in game block coordinates, not pixel coordinates."""
@@ -22,13 +34,13 @@ def draw_lines():
     x_line = 1
     while x_line <= v.BLOCK_WIDTH:
         pygame.draw.line(screen, v.line_c, (x_line*v.BLOCK_SIZE + x_line - 1, 0),
-                         (x_line*v.BLOCK_SIZE + x_line - 1, v.SCREEN_SIZE), 1)
+                         (x_line*v.BLOCK_SIZE + x_line - 1, v.PLAY_AREA), 1)
         x_line += 1
 
     y_line = 1
     while y_line <= v.BLOCK_WIDTH:
         pygame.draw.line(screen, v.line_c, (0, y_line*v.BLOCK_SIZE + y_line - 1),
-                         (v.SCREEN_SIZE, y_line*v.BLOCK_SIZE + y_line - 1), 1)
+                         (v.PLAY_AREA, y_line*v.BLOCK_SIZE + y_line - 1), 1)
         y_line += 1
 
 
@@ -47,7 +59,7 @@ def __main__():
 
     while running:
         # Handle game timing and input events
-        pygame.time.delay(250)
+        pygame.time.delay(200 - snake.score * 1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -72,9 +84,11 @@ def __main__():
         # Detect if the snake has eaten an apple
         if apple.detect_eaten():
             snake.grow()
-            apple.randomize_pos()
-            draw_block(apple.position, v.apple_c)
-            print(apple.position)
+            draw_block(apple.randomize_pos(), v.apple_c)
+            incr_score(snake)
+
+        # Drawing the score
+        screen.blit(scoreSurf, scoreRect.center)
 
         # Update changes to the display
         pygame.display.update()
