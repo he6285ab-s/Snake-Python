@@ -4,3 +4,5 @@ Snake.code-workspace
 .vscode/
 __pycache__/AdamAndEve.cpython-38.pyc
 __pycache__/Values.cpython-38.pyc
+__pycache__/adam_and_eve.cpython-38.pyc
+__pycache__/screen.cpython-38.pyc

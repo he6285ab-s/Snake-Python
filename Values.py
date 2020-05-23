@@ -11,4 +11,8 @@ PLAY_AREA = BLOCK_WIDTH * BLOCK_SIZE + (BLOCK_WIDTH - 1)
 SCORE_AREA = 150
 
 # Colors
-snake_c, bkgrnd_c, line_c, apple_c = (100, 200, 80), (12, 12, 12), (72, 72, 72), (240, 0, 0)
+color_snake = (100, 200, 80)
+color_bkgrnd = (12, 12, 12)
+color_line = (72, 72, 72)
+color_apple = (240, 0, 0)
+color_score_text = (255, 215, 0)
