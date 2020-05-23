@@ -1,25 +1,31 @@
+"""Holds both the snake and apple classes."""
 import random
 import Values as v
 
+
 class Apple():
     """Handles the spawned apples that give points."""
+
     def __init__(self, snake):
         self.snake = snake
         self.randomize_pos()
 
     def randomize_pos(self):
-        self.position = [random.randint(0, v.BLOCK_WIDTH - 1), random.randint(0, v.BLOCK_WIDTH - 1)]
+        """Randomizes a new position for the apple, sets it and returns it."""
+        self.position = [random.randint(
+            0, v.BLOCK_WIDTH - 1), random.randint(0, v.BLOCK_WIDTH - 1)]
 
         # Generate new position if the position is within the snake.
         while self.position in self.snake.position:
-            self.position = [random.randint(0, v.BLOCK_WIDTH), random.randint(0, v.BLOCK_WIDTH)]
+            self.position = [random.randint(
+                0, v.BLOCK_WIDTH), random.randint(0, v.BLOCK_WIDTH)]
 
         return self.position
 
     def detect_eaten(self):
+        """Determines if the snake has eaten the apple. Returns true if it has."""
         if self.position in self.snake.position:
             return True
-        
 
 
 
@@ -64,19 +70,24 @@ class Snake:
         return not self.detect_collision()
 
     def detect_collision(self):
-        """Determines if the snake has lost by colliding with wall or otss own tail. Returns true if snake collided."""
+        """Determines if the snake has lost by colliding with wall or its own tail.
+        Returns true if snake collided."""
         if self.position[0][0] < 0 or self.position[0][0] > v.BLOCK_WIDTH - 1:
             return True
         if self.position[0][1] < 0 or self.position[0][1] > v.BLOCK_WIDTH - 1:
             return True
-        
-        if len(self.position) > 4:
-            for i in range(4, len(self.position)):
-                if self.position[0][0] == self.position[i][0] and self.position[0][1] == self.position[i][1]:
-                    return True
 
+        if len(self.position) > 3:
+            for i in range(3, len(self.position)):
+                if positions_equal(self.position[0], self.position[i]):
+                    return True
 
         return False
 
     def grow(self):
+        """Increases the snake's length by 1."""
         self.position.append(self.position[len(self.position) - 1].copy())
+
+def positions_equal(pos1, pos2):
+    """Returns true if x and y values in pos1 and pos2 are equal."""
+    return pos1[0] == pos2[0] and pos1[1] == pos2[1]

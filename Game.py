@@ -1,3 +1,4 @@
+"""Main part of the structure that holds the main game loop."""
 import pygame
 import Values as v
 from AdamAndEve import Snake, Apple
@@ -14,20 +15,27 @@ pygame.display.flip()
 scoreText = pygame.font.Font('freesansbold.ttf', 60)
 scoreSurf = scoreText.render("Score: 0", True, pygame.Color(255, 255, 255))
 scoreRect = scoreSurf.get_rect()
-scoreRect.center = ((v.PLAY_AREA - scoreRect.width) * 0.5, (v.PLAY_AREA + (v.SCORE_AREA - scoreRect.height) * 0.5))
+scoreRect.center = (int((v.PLAY_AREA - scoreRect.width) / 2),
+                    int(v.PLAY_AREA + (v.SCORE_AREA - scoreRect.height) / 2))
 screen.blit(scoreSurf, scoreRect.center)
 
 # ---------  Help methods ---------- #
 
+
 def incr_score(snake):
+    """Increases the snake's score by 1 and updates the score text field."""
     snake.score += 1
     global scoreSurf
-    scoreSurf = scoreText.render("Score: {}".format(snake.score), True, pygame.Color(255, 255, 255))
+    scoreSurf = scoreText.render("Score: {}".format(
+        snake.score), True, pygame.Color(255, 255, 255))
 
 
 def draw_block(pos, color):
-    """Draw a block at corner with width BLOCK_SIZE in passed color. Note that the passed pos is in game block coordinates, not pixel coordinates."""
-    pygame.draw.rect(screen, color, (pos[0] * v.BLOCK_SIZE + pos[0], pos[1] * v.BLOCK_SIZE + pos[1], v.BLOCK_SIZE, v.BLOCK_SIZE))
+    """Draw a block at corner with width BLOCK_SIZE in passed color.
+    Note that the passed pos is in game block coordinates, not pixel coordinates."""
+    pygame.draw.rect(screen, color, (pos[0] * v.BLOCK_SIZE + pos[0],
+                                     pos[1] * v.BLOCK_SIZE + pos[1], v.BLOCK_SIZE, v.BLOCK_SIZE))
+
 
 def draw_lines():
     """Draw game layout."""
@@ -44,7 +52,6 @@ def draw_lines():
         y_line += 1
 
 
-
 # --------- Main method ---------- #
 
 
@@ -55,7 +62,6 @@ def __main__():
 
     snake.direction = v.right
     apple = Apple(snake)
-
 
     while running:
         # Handle game timing and input events
@@ -80,7 +86,7 @@ def __main__():
                 draw_block(pos, v.snake_c)
         else:
             running = False
-        
+
         # Detect if the snake has eaten an apple
         if apple.detect_eaten():
             snake.grow()
