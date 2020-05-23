@@ -1,6 +1,6 @@
 """Holds both the snake and apple classes."""
 import random
-import values as v
+import constant_values as v
 
 # Values for handling key inputs
 horisontal = [v.down, v.up]

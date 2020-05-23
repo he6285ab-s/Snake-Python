@@ -1,6 +1,6 @@
 """Holds the Screen class."""
 import pygame
-import values as v
+import constant_values as v
 
 
 class Screen:
