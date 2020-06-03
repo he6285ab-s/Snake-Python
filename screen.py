@@ -19,23 +19,54 @@ class Screen:
         self.refresh()
         pygame.display.flip()
 
+
     def refresh(self):
         """Redraws everything in the window. Use this as an update method."""
         self.window.fill(v.color_bkgrnd)
         self._draw_lines()
         self._draw_objects()
-        self.refresh_score()
+        self.refresh_score_field()
         self.window.blit(self.score_surf, self.score_rect.center)
+        self.window.blit(self.high_score_surf, self.high_score_rect.center)
+        self.window.blit(self.instr_surf, self.instr_rect)
         pygame.display.update()
+        pygame.time.delay(200 - self.snake.score * 1)
+
 
     def _init_score_field(self):
-        self.score_text_style = pygame.font.Font('freesansbold.ttf', 60)
+        self.score_text_style = pygame.font.Font('freesansbold.ttf', 50)
         self.score_surf = self.score_text_style.render("Score: 0", True, v.color_score_text)
         self.score_rect = self.score_surf.get_rect()
         self.score_rect.center = (int((v.PLAY_AREA - self.score_rect.width) / 2),
-                                  int(v.PLAY_AREA + (v.SCORE_AREA - self.score_rect.height) / 2))
+                                  int(v.PLAY_AREA + (v.SCORE_AREA - self.score_rect.height) / 6))
+        
+        try:
+            with open("hs.txt") as file:
+                hs = file.read()
+        except:
+            with open("hs.txt", "w") as file:
+                file.write("0")
+                hs = 0
+        
+        self.high_score_surf = self.score_text_style.render("High Score: {}".format(hs), True, v.color_score_text)
+        self.high_score_rect = self.high_score_surf.get_rect()
+        self.high_score_rect.center = (int((v.PLAY_AREA - self.high_score_rect.width) / 2),
+                                  int(v.PLAY_AREA + (v.SCORE_AREA - self.high_score_rect.height) / 2))
 
-    def refresh_score(self):
+        self.instr_text_style = pygame.font.Font('freesansbold.ttf', 20)
+        self.instr_surf = self.instr_text_style.render(v.instructions, True, v.color_score_text)
+        self.instr_rect = self.instr_surf.get_rect()
+        self.instr_rect.center = (int(v.PLAY_AREA / 2),
+                                  int(v.PLAY_AREA + (v.SCORE_AREA - self.instr_rect.height * 2)))
+
+    def refresh_high_score(self):
+        """Sets the value in highscore textfield to the snakes current highscore. 
+        Use to update between games."""
+        with open("hs.txt") as file:
+            hs = int(file.read())
+        setattr(self, "high_score_surf", self.score_text_style.render("High Score: {}".format(hs), True, v.color_score_text))
+
+    def refresh_score_field(self):
         """Increases the snake's score by 1 and updates the score text field."""
         setattr(self, "score_surf", self.score_text_style.render(
             "Score: {}".format(self.snake.score), True, v.color_score_text))
@@ -69,9 +100,8 @@ class Screen:
 
     def handle_events(self):
         """Handles game events such as key presses or clicking close button."""
-        pygame.time.delay(200 - self.snake.score * 1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "quit"
             if event.type == pygame.KEYDOWN:
-                self.snake.update_dir(event.key)
+                self.snake.update(event.key)

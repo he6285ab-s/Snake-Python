@@ -34,25 +34,49 @@ class Snake:
 
     def __init__(self):
         self.positions = [[10, 10]]
-        self.direction = v.right
+        self.direction = 0
         self.score = 0
+        self.last_direction = 0
 
-    def update_dir(self, key):
+    def update(self, key):
         """Updates the snake's direction."""
-        if not key in (v.down, v.up, v.left, v.right):
+        if not key in (v.down, v.up, v.left, v.right, v.p, v.r):
             return
+
+        if key == v.p:
+            self._switch_pause_state()
+            return
+
+        if key == v.r:
+            self.try_write_hs()
+            self.__init__()
 
         # Ignoring inputs that are the same as or the opposite to snake's direction.
         if key in horisontal and self.direction in horisontal:
-            return True
+            return
         if key in vertical and self.direction in vertical:
-            return True
+            return
 
         self.direction = key
+    
+    def try_write_hs(self):
+        with open("hs.txt") as file_r:
+            if int(file_r.read()) < self.score:
+                with open("hs.txt", "w") as file_w:
+                    file_w.write(str(self.score))
 
+    def _switch_pause_state(self):
+        if self.direction == 0:
+            self.direction = self.last_direction
+        else:
+            self.last_direction = self.direction
+            self.direction = 0
 
     def move(self):
         """Move the snake one block in its direction."""
+        if self.direction == 0:
+            return
+
         for i in range(len(self.positions) - 1, 0, -1):
             self.positions[i] = self.positions[i-1].copy()
 
